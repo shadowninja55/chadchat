@@ -1,3 +1,3 @@
 # chadchat
-a tui chat client and server
+a chat client (and server) for chads
 
