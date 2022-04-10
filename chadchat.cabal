@@ -1,0 +1,68 @@
+cabal-version: 2.4
+name:          chadchat
+version:       0.1.0.0
+category:      Chat
+license:       MIT
+license-file:  LICENSE
+author:        Mark Stein
+maintainer:    shadowninja1050@gmail.com
+synopsis:      TUI chat client and server 
+description:
+  A TUI chat client implemented with <https://hackage.haskell.org/package/brick brick>, as well as a server for hosting chatrooms 
+
+homepage:      https://github.com/shadowninja55/chadchat
+
+source-repository head
+  type:     git
+  location: https://github.com/shadowninja55/chadchat
+
+common base
+  build-depends:
+    , base         ^>=4.16.0.0
+    , bytestring   ^>=0.11.1
+    , io-streams   ^>=1.5.2
+    , serialise    ^>=0.2.4
+    , tcp-streams  ^>=1.0.1
+    , text         ^>=1.2.5
+    , utf8-string  ^>=1.0.2
+
+  default-language:   GHC2021
+  default-extensions:
+    NoStarIsType
+    BlockArguments
+    LambdaCase
+    OverloadedStrings
+    LexicalNegation
+    NoFieldSelectors
+    OverloadedRecordDot
+
+  ghc-options:        -Wall
+
+library
+  import:          base
+  hs-source-dirs:  src
+  exposed-modules: ChadChat.Message
+
+executable client
+  import:         base
+  main-is:        Client.hs
+  hs-source-dirs: app
+  build-depends:
+    , brick         ^>=0.68
+    , chadchat
+    , generic-lens  ^>=2.2.1
+    , lens          ^>=5.1
+    , text-zipper   ^>=0.11
+    , unix          ^>=2.7.2
+    , vty           ^>=5.35.1
+
+  ghc-options:    -threaded
+
+executable server
+  import:         base
+  main-is:        Server.hs
+  hs-source-dirs: app
+  build-depends:
+    , chadchat
+    , logging   ^>=3.0.5
+    , network   ^>=3.1.2
