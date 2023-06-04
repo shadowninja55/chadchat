@@ -11,7 +11,7 @@ import Brick.Widgets.Edit
 import ChadChat.Message
 import Codec.Serialise
 import Control.Concurrent
-import Control.Lens
+import Control.Lens hiding (zoom)
 import Control.Monad
 import Control.Monad.IO.Class (liftIO)
 import Data.ByteString qualified as B
@@ -42,20 +42,18 @@ draw st = pure $ vBox
       renderEditor (str . head) True st.messageBox
   ]
 
-onEvent :: State -> BrickEvent () Message -> EventM () (Next State)
-onEvent st = \case
-  AppEvent m -> continue $ st & #messages %~ (m :)
-  VtyEvent (V.EvKey V.KEsc []) -> halt st
+onEvent :: BrickEvent () Message -> EventM () State ()
+onEvent = \case
+  AppEvent m -> #messages %= cons m
+  VtyEvent (V.EvKey V.KEsc []) -> halt
   VtyEvent (V.EvKey V.KEnter []) -> do
-    let 
-     content = head $ getEditContents st.messageBox
-     message = Message st.username content
-    liftIO . send st.connection . B.fromStrict . pack $ content
-    continue $ st 
-      & (#messageBox %~ applyEdit clearZipper)
-      . (#messages %~ (message :))
-  VtyEvent ev -> continue =<< handleEventLensed st #messageBox handleEditorEvent ev
-  _ -> continue st
+    username <- use #username
+    content <- uses #messageBox $ head . getEditContents
+    conn <- use #connection
+    liftIO . send conn . B.fromStrict $ pack content
+    #messageBox %= applyEdit clearZipper
+    #messages %= cons (Message username content)
+  ev -> zoom #messageBox $ handleEditorEvent ev
 
 main :: IO ()
 main = do
@@ -78,6 +76,6 @@ main = do
     { appDraw = draw
     , appChooseCursor = showFirstCursor
     , appHandleEvent = onEvent
-    , appStartEvent = pure
+    , appStartEvent = pure ()
     , appAttrMap = const $ attrMap V.defAttr []
     }

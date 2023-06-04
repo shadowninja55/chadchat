@@ -18,13 +18,13 @@ source-repository head
 
 common base
   build-depends:
-    , base         ^>=4.16.0.0
-    , bytestring   ^>=0.11.1
-    , io-streams   ^>=1.5.2
-    , serialise    ^>=0.2.4
-    , tcp-streams  ^>=1.0.1
-    , text         ^>=1.2.5
-    , utf8-string  ^>=1.0.2
+    , base         >=4 && <5
+    , bytestring   
+    , io-streams  
+    , serialise  
+    , tcp-streams
+    , text        
+    , utf8-string 
 
   default-language:   GHC2021
   default-extensions:
@@ -48,13 +48,13 @@ executable client
   main-is:        Client.hs
   hs-source-dirs: app
   build-depends:
-    , brick         ^>=0.68
+    , brick 
     , chadchat
-    , generic-lens  ^>=2.2.1
-    , lens          ^>=5.1
-    , text-zipper   ^>=0.11
-    , unix          ^>=2.7.2
-    , vty           ^>=5.35.1
+    , generic-lens  
+    , lens      
+    , text-zipper
+    , unix        
+    , vty
 
   ghc-options:    -threaded
 
@@ -64,5 +64,5 @@ executable server
   hs-source-dirs: app
   build-depends:
     , chadchat
-    , logging   ^>=3.0.5
-    , network   ^>=3.1.2
+    , logging 
+    , network
